@@ -7,9 +7,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.opensearch.action.index.IndexRequest;
 import org.opensearch.action.index.IndexResponse;
@@ -27,6 +25,8 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+
+import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 
 public class OpenSearchConsumer {
 
@@ -68,11 +68,12 @@ public class OpenSearchConsumer {
         Properties properties = new Properties();
 
         // connect to localhost
-        properties.setProperty("bootstrap.servers", "localhost:9092");
-        properties.setProperty("key.deserializer", StringDeserializer.class.getName());
-        properties.setProperty("value.deserializer", StringDeserializer.class.getName());
-        properties.setProperty("group.id", groupId);
-        properties.setProperty("auto.offset.reset", "latest");
+        properties.setProperty(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(GROUP_ID_CONFIG, groupId);
+        properties.setProperty(AUTO_OFFSET_RESET_CONFIG, "latest");
+        properties.setProperty(ENABLE_AUTO_COMMIT_CONFIG, "false");
 
         // create a consumer
         return new KafkaConsumer<>(properties);
@@ -130,10 +131,13 @@ public class OpenSearchConsumer {
                                 .source(record.value(), XContentType.JSON)
                                 .id(id);
                         IndexResponse response = openSearchClient.index(indexRequest, RequestOptions.DEFAULT);
-                        log.info(response.getId());
+//                        log.info(response.getId());
                     } catch (Exception e) {
                     }
                 }
+                // commit offsets after the batch is consumed
+                consumer.commitSync();
+                log.info("Offsets have been committed!");
             }
         }
 
