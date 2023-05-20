@@ -29,21 +29,21 @@ public class WikimediaStreamsApp {
     }
 
     public static void main(String[] args) {
-        StreamsBuilder builder = new StreamsBuilder();
+        var builder = new StreamsBuilder();
         KStream<String, String> changeJsonStream = builder.stream(INPUT_TOPIC);
 
-        BotCountStreamBuilder botCountStreamBuilder = new BotCountStreamBuilder(changeJsonStream);
+        var botCountStreamBuilder = new BotCountStreamBuilder(changeJsonStream);
         botCountStreamBuilder.setup();
 
-        WebsiteCountStreamBuilder websiteCountStreamBuilder = new WebsiteCountStreamBuilder(changeJsonStream);
+        var websiteCountStreamBuilder = new WebsiteCountStreamBuilder(changeJsonStream);
         websiteCountStreamBuilder.setup();
 
-        EventCountTimeseriesBuilder eventCountTimeseriesBuilder = new EventCountTimeseriesBuilder(changeJsonStream);
+        var eventCountTimeseriesBuilder = new EventCountTimeseriesBuilder(changeJsonStream);
         eventCountTimeseriesBuilder.setup();
 
-        Topology appTopology = builder.build();
+        var appTopology = builder.build();
         LOGGER.info("Topology: {}", appTopology.describe());
-        KafkaStreams streams = new KafkaStreams(appTopology, properties);
+        var streams = new KafkaStreams(appTopology, properties);
         streams.start();
     }
 }
