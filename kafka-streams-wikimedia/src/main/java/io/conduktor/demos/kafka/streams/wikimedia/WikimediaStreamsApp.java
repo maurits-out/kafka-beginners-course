@@ -1,13 +1,12 @@
 package io.conduktor.demos.kafka.streams.wikimedia;
 
 import io.conduktor.demos.kafka.streams.wikimedia.processor.BotCountStreamBuilder;
-import io.conduktor.demos.kafka.streams.wikimedia.processor.EventCountTimeseriesBuilder;
+import io.conduktor.demos.kafka.streams.wikimedia.processor.EventCountTimeSeriesBuilder;
 import io.conduktor.demos.kafka.streams.wikimedia.processor.WebsiteCountStreamBuilder;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +37,8 @@ public class WikimediaStreamsApp {
         var websiteCountStreamBuilder = new WebsiteCountStreamBuilder(changeJsonStream);
         websiteCountStreamBuilder.setup();
 
-        var eventCountTimeseriesBuilder = new EventCountTimeseriesBuilder(changeJsonStream);
-        eventCountTimeseriesBuilder.setup();
+        var eventCountTimeSeriesBuilder = new EventCountTimeSeriesBuilder(changeJsonStream);
+        eventCountTimeSeriesBuilder.setup();
 
         var appTopology = builder.build();
         LOGGER.info("Topology: {}", appTopology.describe());
