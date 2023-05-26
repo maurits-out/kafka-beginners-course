@@ -44,5 +44,6 @@ public class WikimediaStreamsApp {
         LOGGER.info("Topology: {}", appTopology.describe());
         var streams = new KafkaStreams(appTopology, properties);
         streams.start();
+        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
     }
 }
