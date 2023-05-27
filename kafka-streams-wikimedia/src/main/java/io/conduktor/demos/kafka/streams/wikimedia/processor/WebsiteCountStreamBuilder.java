@@ -9,7 +9,7 @@ import org.apache.kafka.streams.kstream.*;
 import java.time.Duration;
 import java.util.Map;
 
-public class WebsiteCountStreamBuilder {
+public final class WebsiteCountStreamBuilder {
     private static final String WEBSITE_COUNT_STORE = "website-count-store";
     private static final String WEBSITE_COUNT_TOPIC = "wikimedia.stats.website";
     private static final String SERVER_NAME_KEY = "server_name";
